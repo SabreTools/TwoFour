@@ -9,9 +9,9 @@ namespace TwoFour
         public static void Main(string[] args)
         {
             // If we don't have the right inputs, show help and exit
-            if (args.Length != 2)
+            if (args.Length < 2)
             {
-                Console.WriteLine("Exactly 2 arguments are required");
+                Console.WriteLine("At least 2 arguments are required");
                 DisplayHelp();
                 return;
             }
@@ -31,28 +31,31 @@ namespace TwoFour
                 return;
             }
 
-            // Get processing folder from second arg
-            string directory = args[1];
-            try
+            // Get processing folders from remaining args
+            for (int i = 1; i < args.Length; i++)
             {
-                // Get the full path for processing
-                directory = Path.GetFullPath(directory);
-                if (!Directory.Exists(directory))
-                    throw new DirectoryNotFoundException();
+                string directory = args[i];
+                try
+                {
+                    // Get the full path for processing
+                    directory = Path.GetFullPath(directory);
+                    if (!Directory.Exists(directory))
+                        throw new DirectoryNotFoundException();
 
-                // Make sure it ends with a directory separator
-                if (!directory.EndsWith("\\"))
-                    directory += "\\";
-            }
-            catch
-            {
-                Console.WriteLine($"{directory} is not a valid directory");
-                DisplayHelp();
-                return;
-            }
+                    // Make sure it ends with a directory separator
+                    if (!directory.EndsWith("\\"))
+                        directory += "\\";
+                }
+                catch
+                {
+                    Console.WriteLine($"{directory} is not a valid directory");
+                    DisplayHelp();
+                    return;
+                }
 
-            // Now that we have both, run the processing accordingly
-            ProcessFolder(fourdeep.Value, directory);
+                // Now that we have both, run the processing accordingly
+                ProcessFolder(fourdeep.Value, directory);
+            }
         }
 
         /// <summary>
@@ -60,7 +63,7 @@ namespace TwoFour
         /// </summary>
         private static void DisplayHelp()
         {
-            Console.WriteLine("Usage: TwoFour.exe [mode] [path\\to\\folder]");
+            Console.WriteLine("Usage: TwoFour.exe [mode] [path\\to\\folder] ...");
             Console.WriteLine();
             Console.WriteLine("Valid modes for 2-deep: 2, two, rvx, romvaultx, romroot");
             Console.WriteLine("Valid modes for 4-deep: 4, four, romba, depot");
